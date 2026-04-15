@@ -1,35 +1,50 @@
 pipeline {
-    agent {
-        docker {
-            image 'oven/bun:latest'
-        }
+    agent none
+
+    options {
+        skipDefaultCheckout(true)
     }
+
+    environment {
+        APP_NAME = 'tp1-devops'
+        SONAR_PROJECT_KEY = 'lucas-riyad-tp1-devops'
+    }
+
     stages {
-        stage("Build"){
+        stage('Checkout') {
+            agent any
             steps {
+                checkout scm
+                stash name: 'source', includes: '**/*'
+            }
+        }
+
+        stage('Build') {
+            agent {
+                docker {
+                    image 'oven/bun:latest'
+                }
+            }
+            steps {
+                unstash 'source'
                 sh 'bun install'
                 sh 'bun run build'
             }
         }
-        stage("SonarQube") {
-            agent {
-                docker {
-                    image 'sonarsource/sonar-scanner-cli:latest'
-                }
-            }
+        stage('SonarQube Analysis') {
+            agent any
             environment {
-                SONAR_HOST_URL = 'http://sonarqube:9000'
-                SONAR_PROJECT_KEY = 'lucas-riyad-tp1-devops'
+                SCANNER_HOME = tool 'sonar-scanner'
             }
             steps {
-                withCredentials([string(credentialsId: 'sonar', variable: 'SONAR_TOKEN')]) {
+                unstash 'source'
+                withSonarQubeEnv('SonarQube') {
                     sh '''
-                        sonar-scanner \
+                        $SCANNER_HOME/bin/sonar-scanner \
                           -Dsonar.projectKey=$SONAR_PROJECT_KEY \
-                          -Dsonar.projectName=TP1-DevOps \
+                          -Dsonar.projectName="TP1-DevOps" \
                           -Dsonar.sources=src \
-                          -Dsonar.host.url=$SONAR_HOST_URL \
-                          -Dsonar.token=$SONAR_TOKEN
+                          -Dsonar.exclusions=dist/**,node_modules/**
                     '''
                 }
             }
