@@ -124,3 +124,21 @@ TP1 pour Lucas et Riyd
 ## Logs detaillé QualityGate 
 
 ![QualityGate](qualitygate.png)
+
+## SonarQube Report
+
+![quality report 1](sonarqube_qualitycode.png)
+
+![quality report 2 ](sonar_qualitycode2.png)
+
+## Nexus 
+
+### Stage Succeed
+![Final Pipeline](final_jenkins_sonar_nexus.png)
+![stage](nexus_upload_jenkins.png)
+### Upload to nexus
+
+![Nexus Upload](upload_to_nexus.png)
+
+
+
