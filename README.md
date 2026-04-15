@@ -1,17 +1,6 @@
 # TP1-DevOps
-TP1 pour Lucas et Riyad
-
-
-## Partie 1 : Installation et Configuration de Jenkins
-
-### Installer Jenkins en suivant la doc officiel :
-
-Nous avons utilisé l'image docker de jenkins 
-
-
-### Accéder à Jenkins :
-
-![homepage](jenkins_homepage.png)
-
-
-## Pipeline Jenkins
+TP1 pour Lucas et Riyd
+![Stage View](JenkinsGlobalVue.png)
+![Console Outpout Fetch](ConsoleOutput.png)
+![Console Output Install](ConsoleOutput2.png)
+![Console Outpout Build](CnosoleOutput3.png)
