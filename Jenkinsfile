@@ -7,7 +7,7 @@ pipeline {
 
     environment {
         APP_NAME = 'tp1-devops'
-        SONAR_PROJECT_KEY = 'lucas-riyad-tp1-devops'
+        SONAR_PROJECT_KEY = 'lucas-riyad'
     }
 
     stages {
@@ -46,6 +46,15 @@ pipeline {
                           -Dsonar.sources=src \
                           -Dsonar.exclusions=dist/**,node_modules/**
                     '''
+                }
+            }
+        }
+
+        stage('SonarQube Quality Gate') {
+            agent none
+            steps {
+                timeout(time: 10, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }
