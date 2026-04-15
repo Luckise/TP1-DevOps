@@ -8,6 +8,8 @@ pipeline {
     environment {
         APP_NAME = 'tp1-devops'
         SONAR_PROJECT_KEY = 'lucas-riyad'
+        NEXUS_URL = 'http://nexus:8081'
+        NEXUS_REPOSITORY = 'ci-raw'
     }
 
     stages {
@@ -29,6 +31,8 @@ pipeline {
                 unstash 'source'
                 sh 'bun install'
                 sh 'bun run build'
+                sh 'tar -czf artifact-${BUILD_NUMBER}.tgz -C dist .'
+                stash name: 'build-artifact', includes: 'artifact-*.tgz'
             }
         }
         stage('SonarQube Analysis') {
@@ -55,6 +59,20 @@ pipeline {
             steps {
                 timeout(time: 10, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+
+        stage('Upload Artifact to Nexus') {
+            agent any
+            steps {
+                unstash 'build-artifact'
+                withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                    sh '''
+                        curl -f -u "$NEXUS_USER:$NEXUS_PASS" \
+                          --upload-file "artifact-${BUILD_NUMBER}.tgz" \
+                          "$NEXUS_URL/repository/$NEXUS_REPOSITORY/$APP_NAME/${BUILD_NUMBER}/artifact-${BUILD_NUMBER}.tgz"
+                    '''
                 }
             }
         }
