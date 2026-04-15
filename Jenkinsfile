@@ -5,13 +5,6 @@ pipeline {
         skipDefaultCheckout(true)
     }
 
-    environment {
-        APP_NAME = 'tp1-devops'
-        SONAR_PROJECT_KEY = 'lucas-riyad'
-        NEXUS_URL = 'http://nexus:8081'
-        NEXUS_REPOSITORY = 'ci-raw'
-    }
-
     stages {
         stage('Checkout') {
             agent any
@@ -39,6 +32,7 @@ pipeline {
             agent any
             environment {
                 SCANNER_HOME = tool 'sonar-scanner'
+                SONAR_PROJECT_KEY = 'lucas-riyad'
             }
             steps {
                 unstash 'source'
@@ -65,6 +59,11 @@ pipeline {
 
         stage('Upload Artifact to Nexus') {
             agent any
+            environment {
+                APP_NAME = 'tp1-devops'
+                NEXUS_URL = 'http://nexus:8081'
+                NEXUS_REPOSITORY = 'ci-raw'
+            }
             steps {
                 unstash 'build-artifact'
                 withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
