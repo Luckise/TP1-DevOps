@@ -1,6 +1,6 @@
 # TP1 DevOps
 
-Ce projet met en place une pipeline Jenkins complète pour une application javascript/typescript en utilisant Bun (Runtime Javascript/Typescript)
+Ce projet met en place une pipeline Jenkins  pour une application javascript/typescript en utilisant Bun (Runtime Javascript/Typescript)
 
 les étapes sont les suivantes :
 
